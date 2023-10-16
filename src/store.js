@@ -1,12 +1,25 @@
-import { createStore } from "redux";
+import { combineReducers, createStore } from "redux";
 
-const initialState = {
+
+///////////////////////////////////////////////
+// INITIALSTATES
+
+const initialStateAccount = {
   balance: 0,
   loan: 0,
   loanPurpose: ""
 }
 
-function reducer(state = initialState, action) {
+const initialStateCustomer = {
+  fullname: "",
+  nationalID: "",
+  createdAt: ""
+}
+
+////////////////////////////////////////////////////////////////////
+// AllReducers
+
+function AccountReducer(state = initialStateAccount, action) {
   switch (action.type) {
     case "account/deposit": {
       return { ...state, balance: state.balance + action.payload }
@@ -38,22 +51,46 @@ function reducer(state = initialState, action) {
   }
 }
 
-const store = createStore(reducer);
+function CustomerReducer(state = initialStateCustomer, action) {
+  switch (action.type) {
 
-console.log(store.getState());
+    case "customer/createCustomer": {
+      return {
+        fullname: action.payload.fullname,
+        nationalID: action.payload.nationalID,
+        createdAt: action.payload.createdAt
+      }
+    }
 
-// store.dispatch({ type: "account/deposit", payload: 700 })
+    case "customer/updateName": {
+      return {
+        ...state,
+        fullname: action.payload
+      }
+    }
 
-// store.dispatch({ type: "account/withdraw", payload: 200 })
-// console.log(store.getState());
+    default: {
+      return state
+    }
+  }
+}
 
-// store.dispatch({ type: "account/requestLoan", payload: { amount: 500, purpose: "Buy a guitar" } })
-// console.log(store.getState());
+////////////////////////////////////////////////////////////////////
+// RootReducer and Store
 
-// store.dispatch({ type: "account/payLoan" })
-// console.log(store.getState());
+const rootReducer = combineReducers({
+  account: AccountReducer,
+  customer: CustomerReducer
+});
 
-// console.log(store);
+const store = createStore(rootReducer);
+
+
+//////////////////////////////////////////////////////////////////////
+// All Action creators and dispatches
+
+
+// 1. Account
 
 function deposit() {
   return { type: "account/deposit", payload: 700 };
@@ -80,4 +117,19 @@ function payLoan() {
   return { type: "account/payLoan", payload: 200 }
 }
 store.dispatch(payLoan());
+console.log(store.getState());
+
+
+// 2. Customer
+
+function createCustomer(fullname, nationalID) {
+  return { type: "customer/createCustomer", payload: { fullname, nationalID, createdAt: new Date().toISOString() } }
+}
+store.dispatch(createCustomer("Gaurav Joshi", "232323"));
+console.log(store.getState());
+
+function updateCustomer(fullname) {
+  return { type: "customer/updateName", payload: fullname }
+}
+store.dispatch(updateCustomer("Sanjay Joshi"));
 console.log(store.getState());
