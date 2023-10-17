@@ -10,7 +10,6 @@ function AccountOperations() {
   const [currency, setCurrency] = useState("USD");
 
   const account = useSelector(store => store.account);
-  console.log(account);
   const currentLoan = account.loan;
   const currentLoanPurpose = account.loanPurpose;
 
