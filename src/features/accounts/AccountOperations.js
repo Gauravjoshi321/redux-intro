@@ -29,6 +29,7 @@ function AccountOperations() {
     if (!withdrawalAmount) return;
 
     dispatch(withdraw(withdrawalAmount));
+    // dispatch({ type: "account/withdraw", payload: withdrawalAmount });
     setWithdrawalAmount("");
   }
 

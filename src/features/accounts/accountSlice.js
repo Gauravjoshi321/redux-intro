@@ -43,7 +43,6 @@ const accountSlice = createSlice({
   }
 });
 
-console.log(accountSlice);
 
 export default accountSlice.reducer;
 
