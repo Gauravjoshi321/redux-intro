@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+const initialStateAccount = {
   balance: 0,
   loan: 0,
   loanPurpose: "",
@@ -9,7 +9,7 @@ const initialState = {
 
 const accountSlice = createSlice({
   name: "account",
-  initialState,
+  initialState: initialStateAccount,
   reducers: {
 
     deposit(state, action) {
@@ -18,18 +18,28 @@ const accountSlice = createSlice({
     withdraw(state, action) {
       state.balance -= action.payload;
     },
+    // requestLoan: {
+    //   prepare(loanAmount, loanPurpose) {
+    //     return { payload: { loanAmount, loanPurpose } }
+    //   },
+    //   reducer(state, action) {
+    //     if (state.loan > 0) return;
+    //     state.balance += action.payload.loanAmount;
+    //     state.loan = action.payload.loanAmount;
+    //     state.loanPurpose = action.payload.loanPurpose;
+    //   }
+    // }
     requestLoan(state, action) {
       if (state.loan > 0) return;
-      state.balance += action.payload.amount;
-      state.loan = action.payload.amount;
+      state.balance += action.payload.loanAmount;
+      state.loan = action.payload.loanAmount;
       state.loanPurpose = action.payload.loanPurpose;
-    },
-    payLoan(state, action) {
-      state.balance -= state.loan;
-      state.loan = 0;
-      state.loanPurpose = "";
     }
-
+  },
+  payLoan(state, action) {
+    state.balance -= state.loan;
+    state.loan = 0;
+    state.loanPurpose = "";
   }
 });
 
