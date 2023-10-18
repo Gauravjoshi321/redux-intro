@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialStateAccount = {
+const initialState = {
   balance: 0,
   loan: 0,
   loanPurpose: "",
@@ -9,7 +9,7 @@ const initialStateAccount = {
 
 const accountSlice = createSlice({
   name: "account",
-  initialStateAccount,
+  initialState,
   reducers: {
 
     deposit(state, action) {
@@ -24,7 +24,7 @@ const accountSlice = createSlice({
       state.loan = action.payload.amount;
       state.loanPurpose = action.payload.loanPurpose;
     },
-    payload(state, action) {
+    payLoan(state, action) {
       state.balance -= state.loan;
       state.loan = 0;
       state.loanPurpose = "";
@@ -33,65 +33,69 @@ const accountSlice = createSlice({
   }
 });
 
-console.log(accountSlice);
 
-export default function AccountReducer(state = initialStateAccount, action) {
-  switch (action.type) {
-    case "account/deposit": {
-      return { ...state, balance: state.balance + action.payload }
-    }
-    case "account/withdraw": {
-      return { ...state, balance: state.balance - action.payload }
-    }
-    case "account/requestLoan": {
-      if (state.loan > 0) return state;
-      return {
-        ...state,
-        loan: action.payload.amount,
-        balance: state.balance + action.payload.amount,
-        loanPurpose: action.payload.purpose
-      };
-    }
-    case "account/payLoan": {
-      return {
-        ...state,
-        balance: state.balance - state.loan,
-        loan: 0,
-        loanPurpose: ""
-      }
-    }
+export default accountSlice.reducer;
 
-    default: {
-      return state
-    }
-  }
-}
+export const { deposit, withdraw, requestLoan, payLoan } = accountSlice.actions;
 
-export function deposit(amount, currency) {
-  if (currency === "USD")
-    return { type: "account/deposit", payload: amount };
 
-  return async function (dispatch, getState) {
+// export default function AccountReducer(state = initialStateAccount, action) {
+//   switch (action.type) {
+//     case "account/deposit": {
+//       return { ...state, balance: state.balance + action.payload }
+//     }
+//     case "account/withdraw": {
+//       return { ...state, balance: state.balance - action.payload }
+//     }
+//     case "account/requestLoan": {
+//       if (state.loan > 0) return state;
+//       return {
+//         ...state,
+//         loan: action.payload.amount,
+//         balance: state.balance + action.payload.amount,
+//         loanPurpose: action.payload.purpose
+//       };
+//     }
+//     case "account/payLoan": {
+//       return {
+//         ...state,
+//         balance: state.balance - state.loan,
+//         loan: 0,
+//         loanPurpose: ""
+//       }
+//     }
 
-    // API Call
-    const res = await fetch(`https://api.frankfurter.app/latest?amount=${amount}&from=${currency}&to=USD`);
-    const data = await res.json();
+//     default: {
+//       return state
+//     }
+//   }
+// }
 
-    // return action
-    dispatch({ type: "account/deposit", payload: data.rates.USD })
-  }
+// export function deposit(amount, currency) {
+//   if (currency === "USD")
+//     return { type: "account/deposit", payload: amount };
 
-}
+//   return async function (dispatch, getState) {
 
-export function withdraw(amount) {
-  return { type: "account/withdraw", payload: amount }
-}
+//     // API Call
+//     const res = await fetch(`https://api.frankfurter.app/latest?amount=${amount}&from=${currency}&to=USD`);
+//     const data = await res.json();
 
-export function requestLoan(amount, purpose) {
-  return { type: "account/requestLoan", payload: { amount, purpose } }
-}
+//     // return action
+//     dispatch({ type: "account/deposit", payload: data.rates.USD })
+//   }
 
-export function payLoan() {
-  return { type: "account/payLoan" }
-}
+// }
+
+// export function withdraw(amount) {
+//   return { type: "account/withdraw", payload: amount }
+// }
+
+// export function requestLoan(amount, purpose) {
+//   return { type: "account/requestLoan", payload: { amount, purpose } }
+// }
+
+// export function payLoan() {
+//   return { type: "account/payLoan" }
+// }
 
