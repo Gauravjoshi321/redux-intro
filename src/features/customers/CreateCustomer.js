@@ -10,7 +10,6 @@ function Customer() {
 
   function handleClick() {
     if (!fullName || !nationalId) return;
-    console.log(fullName, nationalId);
 
     dispatch(createCustomer({ fullName, nationalId }));
   }
